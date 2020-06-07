@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.myapplication.view.HeadLinesFragment"
+        android:label="@string/headline"
+        tools:layout="@layout/headlines_fragment">
+
+        <action
+            android:id="@+id/actions_toNewsDetails"
+            app:destination="@id/nav_description"/>
+
+        <argument
+            android:name="data"
+            android:defaultValue=" "
+            app:argType="string" />
+
+        <argument
+            android:name="position"
+            android:defaultValue="0"
+            app:argType="integer" />
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_description"
+        android:name="com.example.myapplication.view.SecondNewsDetailsFragment"
+        tools:layout="@layout/details_fragment">
+
+        <action
+            android:id="@+id/actions_toNewsHeadline"
+            app:destination="@id/nav_home"/>
+        <argument
+            android:name="data"
+            android:defaultValue=" "
+            app:argType="string" />
+
+        <argument
+            android:name="position"
+            android:defaultValue="0"
+            app:argType="integer" />
+
+    </fragment>
+
+</navigation>

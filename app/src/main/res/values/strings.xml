@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Daily News</string>
+    <string name="headline">HEADLINES</string>
+    <string name="roboto_bold">roboto_bold.ttf</string>
+    <string name="roboto_regular">roboto_regular.ttf</string>
+</resources>
