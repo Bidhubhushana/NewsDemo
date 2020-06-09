@@ -3,4 +3,6 @@
     <string name="headline">HEADLINES</string>
     <string name="roboto_bold">roboto_bold.ttf</string>
     <string name="roboto_regular">roboto_regular.ttf</string>
+    <string name="no_interner">No internet connection</string>
+    <string name="oops_wrong">Oops Something went Wrong</string>
 </resources>

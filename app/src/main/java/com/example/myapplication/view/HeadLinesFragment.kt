@@ -17,23 +17,26 @@ import com.example.myapplication.adapter.NewsPagerListAdapter
 import com.example.myapplication.databinding.HeadlinesFragmentBinding
 import com.example.myapplication.util.getFont
 import com.example.myapplication.viewmodel.NewsFeedViewModel
+import org.koin.core.KoinComponent
 
 
-class HeadLinesFragment : Fragment(), NewsPagerListAdapter.OnClick {
+class HeadLinesFragment : Fragment(),KoinComponent, NewsPagerListAdapter.OnClick {
 
-    private  val newsFeedViewModel: NewsFeedViewModel by activityViewModels()
-    private lateinit var headlineBinding:HeadlinesFragmentBinding
+    private val newsFeedViewModel: NewsFeedViewModel by activityViewModels()
+    private lateinit var headlineBinding: HeadlinesFragmentBinding
     private lateinit var newsAdapter: NewsPagerListAdapter
-    private var isLoading:Boolean=false
+    private var isLoading: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
-        headlineBinding = HeadlinesFragmentBinding.inflate(inflater, container,false)
+        headlineBinding = HeadlinesFragmentBinding.inflate(inflater, container, false)
 
         return headlineBinding.root
     }
@@ -48,8 +51,24 @@ class HeadLinesFragment : Fragment(), NewsPagerListAdapter.OnClick {
         headlineBinding.feedRecyclerView.adapter = newsAdapter
 
         newsFeedViewModel.getFeedList()?.observe(requireActivity(), Observer { it ->
-               newsAdapter.submitList(it)
-            })
+            newsAdapter.submitList(it)
+        })
+
+        newsFeedViewModel.mIsLoading.observe(requireActivity(), Observer {
+            if (it!!) {
+                headlineBinding.progressBar.show()
+            } else {
+                headlineBinding.progressBar.hide()
+            }
+        })
+
+        newsFeedViewModel.mIsMoreLoading.observe(requireActivity(), Observer {
+            if (it!!) {
+                headlineBinding.loadingProgressBar.show()
+            } else {
+                headlineBinding.loadingProgressBar.hide()
+            }
+        })
 
 
         headlineBinding.headline.typeface = activity getFont getString(R.string.roboto_bold)
@@ -60,7 +79,8 @@ class HeadLinesFragment : Fragment(), NewsPagerListAdapter.OnClick {
     }
 
     private fun initScrollListener() {
-        headlineBinding.feedRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        headlineBinding.feedRecyclerView.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
             }
@@ -69,12 +89,13 @@ class HeadLinesFragment : Fragment(), NewsPagerListAdapter.OnClick {
                 super.onScrolled(recyclerView, dx, dy)
                 val linearLayoutManager =
                     recyclerView.layoutManager as LinearLayoutManager?
-                if (!isLoading) {
-                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == newsAdapter.itemCount - 1) {
-                        //bottom of list!
+
+                if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == newsAdapter.itemCount - 1) {
+                    //bottom of list!
+                    if (newsFeedViewModel.mIsMoreLoading.value?.not()!!) {
                         newsFeedViewModel.loadMore()
                         //newsFeedViewModel.notifyAdapter(newsAdapter.itemCount - 1,10)
-                        isLoading = true
+                        newsFeedViewModel.mIsMoreLoading.postValue(true)
                     }
                 }
             }
@@ -82,11 +103,10 @@ class HeadLinesFragment : Fragment(), NewsPagerListAdapter.OnClick {
     }
 
 
-
     override fun onClick(imageView: ImageView, position: Int) {
-        val  action=HeadLinesFragmentDirections.actionsToNewsDetails()
-       // val extras = FragmentNavigatorExtras(imageView to "img_transition")
-        action.position=position
+        val action = HeadLinesFragmentDirections.actionsToNewsDetails()
+        // val extras = FragmentNavigatorExtras(imageView to "img_transition")
+        action.position = position
         findNavController().navigate(action)
     }
 

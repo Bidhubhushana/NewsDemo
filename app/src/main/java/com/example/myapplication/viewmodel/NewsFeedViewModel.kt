@@ -3,7 +3,6 @@ package com.example.myapplication.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.Config
 import androidx.paging.PagedList
@@ -12,38 +11,46 @@ import com.example.myapplication.db.AppDataBaseManager
 import com.example.myapplication.db.NewsFeedModelEntity
 import com.example.myapplication.repo.AppRepository
 import com.example.myapplication.util.CommonUtils
+import com.example.myapplication.util.CommonUtils.Companion.startRefreshingNewsScheduler
+import org.koin.experimental.property.inject
 
-class NewsFeedViewModel(app: Application): AndroidViewModel(app) {
+class NewsFeedViewModel(val app: Application) : AndroidViewModel(app) {
 
-    private val isMoreData: MutableLiveData<Boolean> = MutableLiveData()
-    private var pageSize:MutableLiveData<Int> = MutableLiveData()
-    private val repository: AppRepository = AppRepository(app)
-    private var page:Int=1
-    private var initialPageSize=10
-    private var newsFeedDao= AppDataBaseManager.db.getNewsDao()
-    private var newsFeed: LiveData<PagedList<NewsFeedModelEntity>> ? =null
-    private var utils=CommonUtils
+    private var page: Int = 1
+    private val newsFeedDao=AppDataBaseManager.db.getNewsDao()
+    private val repository= AppRepository(app,this)
+    private var newsFeed: LiveData<PagedList<NewsFeedModelEntity>>? = null
+    var mIsMoreLoading: MutableLiveData<Boolean?> = MutableLiveData()
+    val mIsLoading: MutableLiveData<Boolean?> = MutableLiveData()
+    val misMoreDataAvailable: MutableLiveData<Boolean?> = MutableLiveData()
+    private val utils= CommonUtils()
 
     init {
-        page=1
-        isMoreData.value=false
-        pageSize.value=initialPageSize
+        page = 1
+        mIsLoading.value = true
+        mIsMoreLoading.value = false
         repository.updateNewsFeed(page = page)
-        newsFeed = newsFeedDao.getNewsFeed().toLiveData(Config(pageSize = pageSize.value!!,enablePlaceholders = true, maxSize = 200))
-        utils.startRefreshingNewsScheduler(app)
+        newsFeed = newsFeedDao.getNewsFeed().toLiveData(
+            Config(
+                pageSize = 10,
+                enablePlaceholders = true,
+                maxSize = 200
+            )
+        )
+        utils.run { startRefreshingNewsScheduler(app) }
     }
 
-    fun loadMore(){
+    fun loadMore() {
+        if (misMoreDataAvailable.value == false) {
+            mIsMoreLoading.value = false
+            return
+        }
         page++
-        pageSize.value=initialPageSize+10
-        isMoreData.value=true
+        mIsMoreLoading.value = true
         repository.loadMore(page = page)
-
     }
 
-    fun getFeedList():LiveData<PagedList<NewsFeedModelEntity>> ?{
+    fun getFeedList(): LiveData<PagedList<NewsFeedModelEntity>>? {
         return newsFeed
     }
-
-
 }

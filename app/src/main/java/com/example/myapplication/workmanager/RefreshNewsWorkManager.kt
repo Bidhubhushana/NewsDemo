@@ -8,15 +8,12 @@ import com.example.myapplication.db.AppDataBaseManager
 import com.example.myapplication.repo.AppRepository
 import java.lang.Exception
 
-class RefreshNewsWorkManager(val context: Context, val params: WorkerParameters) :
-    Worker(context, params) {
-
-    var appRespo = AppRepository(context)
+class RefreshNewsWorkManager(private val context: Context, private val params: WorkerParameters, private val appRespo: AppRepository,val database:AppDataBaseManager) : Worker(context, params) {
 
     override fun doWork(): Result {
         var isSuccess: Boolean
         try {
-            AppDataBaseManager.db.getNewsDao().deleteAll()
+            database.db.getNewsDao().deleteAll()
             appRespo.updateNewsFeed(page = 1)
             isSuccess = true
         } catch (e: Exception) {

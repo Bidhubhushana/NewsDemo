@@ -1,15 +1,15 @@
 package com.example.myapplication.util
 
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.widget.ContentLoadingProgressBar
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.LiveData
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.myapplication.adapter.NewsAdapter
+import com.example.myapplication.adapter.NewsPagerListAdapter
 import com.example.myapplication.db.NewsFeedModelEntity
-import org.ocpsoft.prettytime.PrettyTime
-import java.util.*
 
 class DataBindingUtil {
 
@@ -37,11 +37,9 @@ class DataBindingUtil {
         fun setTime(textView: TextView, text: String?) {
 
             if (!text.isNullOrEmpty()) {
-                var calender=Calendar.getInstance(TimeZone.getTimeZone(text))
-                val prettyTime = PrettyTime(Locale.getDefault())
-                val ago: String = prettyTime.format(calender)
-                if (!ago.isEmpty()) {
-                    textView.text = ago
+                val time= text.substringBefore("T","moments ago")
+                if (!time.isNullOrEmpty()) {
+                    textView.text = time
                 }
             }
         }
@@ -49,11 +47,34 @@ class DataBindingUtil {
 
         @JvmStatic
         @BindingAdapter("feedItems")
-        fun setFeedItems(recyclerView: RecyclerView, items: LiveData<List<NewsFeedModelEntity?>>) {
-            val adapter = recyclerView.adapter as NewsAdapter?
-            if (adapter != null && !items.value.isNullOrEmpty()) {
-                adapter.addItems(items.value!!)
+        fun setFeedItems(recyclerView: RecyclerView, items: PagedList<NewsFeedModelEntity?>?) {
+            val adapter = recyclerView.adapter as NewsPagerListAdapter?
+            if (!items.isNullOrEmpty()) {
+                adapter?.submitList(items)
             }
+        }
+        @JvmStatic
+        @BindingAdapter("loader_visibility")
+        fun loaderVisibility(loader: ContentLoadingProgressBar, status: Boolean) {
+
+            if (status) {
+                loader.visibility = View.VISIBLE
+            } else {
+                loader.visibility = View.GONE
+            }
+
+        }
+
+        @JvmStatic
+        @BindingAdapter("more_data_visibility")
+        fun loadMoreVisibility(loader: ContentLoadingProgressBar, status: Boolean) {
+
+            if (status) {
+                loader.visibility = View.VISIBLE
+            } else {
+                loader.visibility = View.GONE
+            }
+
         }
     }
 }
