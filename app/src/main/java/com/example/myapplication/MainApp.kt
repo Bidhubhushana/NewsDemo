@@ -2,7 +2,7 @@ package com.example.myapplication
 
 import android.app.Application
 import android.content.Context
-import com.example.myapplication.di.appModule
+import com.example.myapplication.di.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -24,7 +24,7 @@ class MainApp :Application() {
     private fun initiateKoin() {
         startKoin{
             androidContext(this@MainApp)
-            modules(appModule)
+            modules(listOf(appModule1, appmodule2, appmodule3, appmodule4, appmodule5, appmodule6))
         }
     }
     companion object {

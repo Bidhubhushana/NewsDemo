@@ -20,16 +20,13 @@ import retrofit2.Response
 import timber.log.Timber
 
 
-class AppRepository(val context: Context,val model: NewsFeedViewModel?) : retrofit2.Callback<NewsHeadline> {
+class AppRepository(val context: Context, val model: NewsFeedViewModel?) : retrofit2.Callback<NewsHeadline> {
 
 
     private var newTitles: List<NewsTittles>? = null
 
     private val apiService = Retrofit2Manager.getRetrofit().create(ApiService::class.java)
 
-    init {
-
-    }
 
     fun updateNewsFeed(page:Int) {
         val call = apiService.getHeadLines(ApiEndPoints.API_KEY,page)

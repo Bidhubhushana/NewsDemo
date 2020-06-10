@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,12 +16,14 @@ import com.example.myapplication.adapter.NewsPagerListAdapter
 import com.example.myapplication.databinding.HeadlinesFragmentBinding
 import com.example.myapplication.util.getFont
 import com.example.myapplication.viewmodel.NewsFeedViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
+
 
 
 class HeadLinesFragment : Fragment(),KoinComponent, NewsPagerListAdapter.OnClick {
 
-    private val newsFeedViewModel: NewsFeedViewModel by activityViewModels()
+    private val newsFeedViewModel: NewsFeedViewModel by sharedViewModel()
     private lateinit var headlineBinding: HeadlinesFragmentBinding
     private lateinit var newsAdapter: NewsPagerListAdapter
     private var isLoading: Boolean = false
