@@ -52,6 +52,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/standard_100dp"
+                tools:listitem="@layout/item_news"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

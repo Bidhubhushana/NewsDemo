@@ -70,11 +70,13 @@ class NewsPagerListAdapter(val context: Context, val listener: OnClick,val model
 
             is NewsViewHolder->{
 
-                holder.headerView.data = getItem(position)
+                val  item=getItem(position)
+                holder.headerView.data = item
+                holder.headerView.image.transitionName=item?.urlToImage!!
                 holder.headerView.executePendingBindings()
 
                 holder.headerView.itemCardView.setOnClickListener {
-                    listener.onClick(holder.headerView.image, position)
+                    listener.onClick(holder.headerView.image, position,item)
                 }
             }
             is FooterViewHolder->{
@@ -105,7 +107,7 @@ class NewsPagerListAdapter(val context: Context, val listener: OnClick,val model
         RecyclerView.ViewHolder(footerView.root)
 
     interface OnClick {
-        fun onClick(imageView: ImageView, position: Int)
+        fun onClick(imageView: ImageView, position: Int,item:NewsFeedModelEntity?)
     }
 
     companion object {

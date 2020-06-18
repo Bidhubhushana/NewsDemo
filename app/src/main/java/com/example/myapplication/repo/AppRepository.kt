@@ -1,6 +1,5 @@
 package com.example.myapplication.repo
 
-import android.app.Application
 import android.content.Context
 import com.example.myapplication.R
 import com.example.myapplication.db.AppDataBaseManager
@@ -86,7 +85,6 @@ class AppRepository(val context: Context, val model: NewsFeedViewModel?) : retro
 
             runBlocking {
                 launch(Dispatchers.IO) {
-                     //AppDataBaseManager.db.getNewsDao().deleteAll()
 
                     if (model?.mIsMoreLoading?.value!=null && model.mIsMoreLoading.value?.not()!!){
                         AppDataBaseManager.db.getNewsDao().deleteAll()
