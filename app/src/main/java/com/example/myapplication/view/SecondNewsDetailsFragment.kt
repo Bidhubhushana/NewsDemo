@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.transition.TransitionInflater
 import com.example.myapplication.R
 import com.example.myapplication.databinding.DetailsFragmentBinding
 import com.example.myapplication.util.getFont
@@ -31,7 +32,7 @@ class SecondNewsDetailsFragment : Fragment() {
 
         position=SecondNewsDetailsFragmentArgs.fromBundle(requireArguments()).position
         viewBinding= DetailsFragmentBinding.inflate(inflater,container,false)
-
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
 
         return viewBinding.root
     }
@@ -43,13 +44,18 @@ class SecondNewsDetailsFragment : Fragment() {
         viewBinding.lifecycleOwner=this
 
         viewBinding.backImage.setOnClickListener {
-            val backStack=SecondNewsDetailsFragmentDirections.actionsToNewsHeadline()
-            findNavController().navigate(backStack)
+            findNavController().popBackStack()
         }
 
         newsFeedViewModel.getFeedList()?.observe(requireActivity(), Observer {
             if(!it.isNullOrEmpty()) {
-                viewBinding.data=it[position]
+                try {
+                    viewBinding.data=it[position]
+                }
+                catch (e:Exception){
+                    e.printStackTrace()
+                }
+
             }
         })
 

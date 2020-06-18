@@ -33,9 +33,6 @@ class NewsPagerListAdapter(val context:Context,val listener:OnClick): PagedListA
 
         holder.view.itemCardView.setOnClickListener {
             listener.onClick(holder.view.image,position)
-//            newsFeedViewModel.selectedFeedPosition.value = position
-
-            //newsFeedViewModel.selectedFeedData?.value = newsList!![position]
         }
     }
 

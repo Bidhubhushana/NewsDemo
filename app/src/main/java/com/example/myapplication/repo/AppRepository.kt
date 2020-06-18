@@ -54,6 +54,7 @@ class AppRepository(val context: Context, val model: NewsFeedViewModel?) : retro
         //Timber.d( "success==${response.body()?.totalResults}")
         model?.mIsLoading?.postValue(false)
         model?.mIsMoreLoading?.postValue(false)
+        model?.mIsRefresh?.postValue(false)
 
         if (response.body()?.articles.isNullOrEmpty()){
             model?.misMoreDataAvailable?.postValue(false)
@@ -86,7 +87,7 @@ class AppRepository(val context: Context, val model: NewsFeedViewModel?) : retro
                 launch(Dispatchers.IO) {
                      //AppDataBaseManager.db.getNewsDao().deleteAll()
 
-                    if (model?.mIsMoreLoading?.value?.not()!!){
+                    if (model?.mIsMoreLoading?.value!=null && model.mIsMoreLoading.value?.not()!!){
                         AppDataBaseManager.db.getNewsDao().deleteAll()
                     }
                     AppDataBaseManager.db.getNewsDao().insertAll(newsList)

@@ -39,7 +39,7 @@ class CommonUtils {
                 PeriodicWorkRequest.Builder(RefreshNewsWorkManager::class.java,
                     2, TimeUnit.HOURS)
                     .build()
-               workManager.enqueueUniquePeriodicWork(
+                workManager.enqueueUniquePeriodicWork(
                 REFRESH_NES_FEED, ExistingPeriodicWorkPolicy.KEEP,
                 workRequest
             )

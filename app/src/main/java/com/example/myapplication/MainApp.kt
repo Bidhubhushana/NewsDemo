@@ -5,6 +5,8 @@ import android.content.Context
 import com.example.myapplication.di.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import timber.log.Timber
+import timber.log.Timber.DebugTree
 
 
 class MainApp :Application() {
@@ -12,6 +14,9 @@ class MainApp :Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
+        if (BuildConfig.DEBUG) {
+            Timber.plant(DebugTree())
+        }
         initiateKoin()
 
     }

@@ -26,6 +26,10 @@ interface NewsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(items: List<NewsFeedModelEntity?>)
 
+    @Query("SELECT COUNT(*) FROM news_feed")
+    fun getNumOfRows(): Int
+
     @Query("DELETE from news_feed")
     fun deleteAll()
+
 }

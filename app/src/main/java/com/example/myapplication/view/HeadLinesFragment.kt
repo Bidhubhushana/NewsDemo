@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -51,6 +52,7 @@ class HeadLinesFragment : Fragment(),KoinComponent, NewsPagerListAdapter.OnClick
         newsAdapter = NewsPagerListAdapter(activity as Context, this)
         headlineBinding.feedRecyclerView.adapter = newsAdapter
 
+
         newsFeedViewModel.getFeedList()?.observe(requireActivity(), Observer { it ->
             newsAdapter.submitList(it)
         })
@@ -71,44 +73,26 @@ class HeadLinesFragment : Fragment(),KoinComponent, NewsPagerListAdapter.OnClick
             }
         })
 
+        newsFeedViewModel.mIsRefresh.observe(requireActivity(), Observer {
+            headlineBinding.SwipeToRefreshLayout.isRefreshing = it!!
+            headlineBinding.progressBar.hide()
+        })
+
+        headlineBinding.SwipeToRefreshLayout.setOnRefreshListener {
+            newsFeedViewModel.refreshFeed()
+        }
 
         headlineBinding.headline.typeface = activity getFont getString(R.string.roboto_bold)
-
-        initScrollListener()
 
         headlineBinding.executePendingBindings()
     }
 
-    private fun initScrollListener() {
-        headlineBinding.feedRecyclerView.addOnScrollListener(object :
-            RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val linearLayoutManager =
-                    recyclerView.layoutManager as LinearLayoutManager?
-
-                if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == newsAdapter.itemCount - 1) {
-                    //bottom of list!
-                    if (newsFeedViewModel.mIsMoreLoading.value?.not()!!) {
-                        newsFeedViewModel.loadMore()
-                        //newsFeedViewModel.notifyAdapter(newsAdapter.itemCount - 1,10)
-                        newsFeedViewModel.mIsMoreLoading.postValue(true)
-                    }
-                }
-            }
-        })
-    }
-
 
     override fun onClick(imageView: ImageView, position: Int) {
-        val action = HeadLinesFragmentDirections.actionsToNewsDetails()
-        // val extras = FragmentNavigatorExtras(imageView to "img_transition")
-        action.position = position
-        findNavController().navigate(action)
+         val action = HeadLinesFragmentDirections.actionsToNewsDetails()
+         val extras = FragmentNavigatorExtras(imageView to "img_transition")
+         action.position = position
+        findNavController().navigate(action,extras)
     }
 
 }

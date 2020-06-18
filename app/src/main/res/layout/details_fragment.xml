@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/colorPrimaryVeryLight"
             android:layout_height="match_parent">
 
         <RelativeLayout
@@ -29,6 +29,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/standard_400"
                 android:scaleType="centerCrop"
+                android:transitionName="img_transition"
+                app:layout_collapseMode="parallax"
                 app:imgUrl="@{data.urlToImage}" />
 
             <TextView
@@ -42,6 +44,7 @@
                 android:textColor="#f2f2f2"
                 android:layout_marginTop="@dimen/standard_12dp"
                 android:textSize="@dimen/text_size_16"
+                android:textStyle="bold"
                 app:text="@{data.title}" />
 
             <TextView
