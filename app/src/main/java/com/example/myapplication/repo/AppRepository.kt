@@ -42,6 +42,7 @@ class AppRepository(val context: Context, val model: NewsFeedViewModel?) : retro
 
         model?.mIsLoading?.postValue(false)
         model?.mIsMoreLoading?.postValue(false)
+        model?.mIsRefresh?.postValue(false)
         Timber.d( "error==$t")
         context.toastMsg(context.getString(R.string.no_interner))
     }
@@ -97,6 +98,7 @@ class AppRepository(val context: Context, val model: NewsFeedViewModel?) : retro
             } 
         }
         else{
+
             context.toastMsg(context.getString(R.string.oops_wrong))
         }
     }

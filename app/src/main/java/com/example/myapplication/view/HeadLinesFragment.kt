@@ -10,8 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.adapter.NewsPagerListAdapter
 import com.example.myapplication.databinding.HeadlinesFragmentBinding
@@ -49,7 +47,7 @@ class HeadLinesFragment : Fragment(),KoinComponent, NewsPagerListAdapter.OnClick
         headlineBinding.viewModel = newsFeedViewModel
         headlineBinding.lifecycleOwner = this
 
-        newsAdapter = NewsPagerListAdapter(activity as Context, this)
+        newsAdapter = NewsPagerListAdapter(activity as Context, this,newsFeedViewModel)
         headlineBinding.feedRecyclerView.adapter = newsAdapter
 
 
@@ -57,25 +55,8 @@ class HeadLinesFragment : Fragment(),KoinComponent, NewsPagerListAdapter.OnClick
             newsAdapter.submitList(it)
         })
 
-        newsFeedViewModel.mIsLoading.observe(requireActivity(), Observer {
-            if (it!!) {
-                headlineBinding.progressBar.show()
-            } else {
-                headlineBinding.progressBar.hide()
-            }
-        })
-
-        newsFeedViewModel.mIsMoreLoading.observe(requireActivity(), Observer {
-            if (it!!) {
-                headlineBinding.loadingProgressBar.show()
-            } else {
-                headlineBinding.loadingProgressBar.hide()
-            }
-        })
-
         newsFeedViewModel.mIsRefresh.observe(requireActivity(), Observer {
             headlineBinding.SwipeToRefreshLayout.isRefreshing = it!!
-            headlineBinding.progressBar.hide()
         })
 
         headlineBinding.SwipeToRefreshLayout.setOnRefreshListener {
